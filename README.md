@@ -4,6 +4,8 @@ A modern application launcher (start menu) for KDE Plasma 6, built on the same b
 
 The design is modelled after the [Start Menu Concept](https://dribbble.com/shots/16617776-Start-Menu-Concept-1-2) shot on Dribbble.
 
+![Laetum Launcher open on a Plasma 6 panel](docs/screenshot.png)
+
 ## Features
 
 - **Pinned, Recent and All Apps** tabs with a sliding accent indicator
