@@ -79,7 +79,7 @@ ListView {
         acceptedButtons: Qt.LeftButton | Qt.RightButton
 
         function openMenu(x, y) {
-            list.menuView.openContextMenu(row, list.model, index, model.actionList, x, y);
+            list.menuView.openContextMenu(row, list.model, index, model.actionList, model.favoriteId ?? "", x, y);
         }
 
         onEntered: {

@@ -256,7 +256,7 @@ ListView {
                     acceptedButtons: Qt.LeftButton | Qt.RightButton
 
                     function openMenu(x, y) {
-                        view.menuView.openContextMenu(tile, view.sourceModel, row, item ? item.actionList : null, x, y);
+                        view.menuView.openContextMenu(tile, view.sourceModel, row, item ? item.actionList : null, item ? item.favoriteId : "", x, y);
                     }
 
                     onEntered: {

@@ -80,8 +80,35 @@ FocusScope {
     property var menuModel: null
     property int menuIndex: -1
 
-    function openContextMenu(visualParent, model, index, actionList, x, y) {
-        if (!actionList || actionList.length === 0) {
+    // Kickoff adds Pin/Unpin itself rather than relying on the model's actionList
+    function favoriteActions(favoriteId) {
+        const favorites = root.rootModel.favoritesModel;
+        if (!favorites || !favoriteId) {
+            return [];
+        }
+        return favorites.isFavorite(favoriteId)
+            ? [{ text: i18n("Remove from Favorites"), icon: "list-remove", actionId: "_kicker_favorite_remove", actionArgument: favoriteId }]
+            : [{ text: i18n("Add to Favorites"), icon: "bookmark-new", actionId: "_kicker_favorite_add", actionArgument: favoriteId }];
+    }
+
+    function triggerAction(actionId, actionArgument) {
+        if (actionId === "_kicker_favorite_add") {
+            root.rootModel.favoritesModel.addFavorite(actionArgument);
+        } else if (actionId === "_kicker_favorite_remove") {
+            root.rootModel.favoritesModel.removeFavorite(actionArgument);
+        } else if (menuModel && menuModel.trigger(menuIndex, actionId, actionArgument)) {
+            root.expanded = false;
+        }
+    }
+
+    function openContextMenu(visualParent, model, index, actionList, favoriteId, x, y) {
+        const favorites = favoriteActions(favoriteId);
+        const others = (actionList || []).filter(a => !String(a.actionId ?? "").startsWith("_kicker_favorite_"));
+        if (favorites.length > 0 && others.length > 0) {
+            favorites.push({ type: "separator" });
+        }
+        actionList = favorites.concat(others);
+        if (actionList.length === 0) {
             return;
         }
         menuModel = model;
@@ -117,11 +144,7 @@ FocusScope {
             enabled: actionItem.type !== "title" && (actionItem.enabled ?? true)
             checkable: actionItem.checkable ?? false
             checked: actionItem.checked ?? false
-            onClicked: {
-                if (menu.menuModel && menu.menuModel.trigger(menu.menuIndex, actionItem.actionId, actionItem.actionArgument)) {
-                    root.expanded = false;
-                }
-            }
+            onClicked: menu.triggerAction(actionItem.actionId, actionItem.actionArgument)
         }
     }
 

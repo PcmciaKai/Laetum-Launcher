@@ -25,7 +25,7 @@ A modern application launcher (start menu) for KDE Plasma 6, built on the same b
 Download `laetum-launcher-<version>.plasmoid` from the [Releases](../../releases) page, then:
 
 ```bash
-kpackagetool6 -t Plasma/Applet -i laetum-launcher-1.1.plasmoid
+kpackagetool6 -t Plasma/Applet -i laetum-launcher-1.2.plasmoid
 ```
 
 Or from a checkout of this repository:
