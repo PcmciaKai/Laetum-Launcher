@@ -1,0 +1,21 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "pcmciakai"
+            }
+        ],
+        "Category": "Application Launchers",
+        "Description": "A modern application launcher with pinned, recent and all apps",
+        "Icon": "start-here-kde-symbolic",
+        "Id": "local.laetum",
+        "License": "GPL-3.0-or-later",
+        "Name": "Laetum Launcher",
+        "Version": "1.1"
+    },
+    "KPackageStructure": "Plasma/Applet",
+    "X-Plasma-API-Minimum-Version": "6.0",
+    "X-Plasma-Provides": [
+        "org.kde.plasma.launchermenu"
+    ]
+}
