@@ -2,6 +2,8 @@
 
 A modern application launcher (start menu) for KDE Plasma 6, built on the same backend models as Kickoff, so it shares your favourites, search runners and app list.
 
+The design is modelled after the [Start Menu Concept](https://dribbble.com/shots/16617776-Start-Menu-Concept-1-2) shot on Dribbble.
+
 ## Features
 
 - **Pinned, Recent and All Apps** tabs with a sliding accent indicator
@@ -47,8 +49,7 @@ Right-click the icon → **Configure Laetum Launcher…**
 | --- | --- |
 | Panel icon | The icon shown on the panel |
 | Grid columns | Number of app tiles per row (3–8) |
-| Accent colour | Use the KDE colour scheme's accent, or the Plasma style's highlight colour |
-| Store app | Desktop file ID launched by the store button (default `io.github.kolunmi.Bazaar`); leave it empty to hide the button |
+| Store app | Desktop file ID launched by the store button (default `org.dnf.AppCenter`, the DNF App Center); leave it empty to hide the button |
 | Show the Recent tab | Show or hide the Recent tab |
 | Open on tab | Which tab the menu opens on |
 | Category tabs | Extra tabs for any of your application categories |

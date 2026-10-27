@@ -76,6 +76,13 @@ FocusScope {
         root.expanded = false;
     }
 
+    // Launch by desktop file ID if one exists (e.g. org.dnf.AppCenter), otherwise as a command (e.g. dnf-app-center)
+    function runApp(id) {
+        const quoted = "'" + String(id).replace(/'/g, "'\\''") + "'";
+        run("sh -c 'for d in \"${XDG_DATA_HOME:-$HOME/.local/share}\" $(echo \"${XDG_DATA_DIRS:-/usr/local/share:/usr/share}\" | tr : \" \"); do "
+            + "[ -e \"$d/applications/$0.desktop\" ] && exec kstart --application \"$0\"; done; exec kstart -- \"$0\"' " + quoted);
+    }
+
     // ---- Context menu, built from the model's actionList like Kickoff does ----
     property var menuModel: null
     property int menuIndex: -1
@@ -232,7 +239,7 @@ FocusScope {
                     visible: Plasmoid.configuration.storeApp !== ""
                     iconName: "amarok_cart_view-symbolic"
                     tooltip: i18n("Software Store")
-                    onClicked: menu.run("kstart --application " + Plasmoid.configuration.storeApp)
+                    onClicked: menu.runApp(Plasmoid.configuration.storeApp)
                 }
                 HeaderButton {
                     iconName: "folder-symbolic"

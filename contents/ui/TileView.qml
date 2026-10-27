@@ -27,6 +27,7 @@ ListView {
     property var lines: []            // [{header: "A"} | {items: [row, …]}]
     property var order: []            // rows in display order
     property var positions: ({})      // row -> {line, col}
+    property int dataRevision: 0      // bumped on rebuild so tiles re-read their row's data
 
     model: lines
     clip: true
@@ -91,6 +92,7 @@ ListView {
 
         order = ord;
         positions = pos;
+        dataRevision++;
         lines = out;
     }
 
@@ -161,12 +163,14 @@ ListView {
         if (!items) {
             return;
         }
+        // Dropping on a tile takes its place; past the end of a line goes after its last tile
         const col = Math.max(0, Math.floor(x / cellWidth));
+        const from = order.indexOf(dragRow);
         if (col >= items.length) {
             dropIndex = order.indexOf(items[items.length - 1]) + 1;
         } else {
-            const after = x - col * cellWidth > cellWidth / 2;
-            dropIndex = order.indexOf(items[col]) + (after ? 1 : 0);
+            const target = order.indexOf(items[col]);
+            dropIndex = target > from ? target + 1 : target;
         }
     }
 
@@ -199,7 +203,8 @@ ListView {
 
     // Where the drop marker goes: left edge of the tile at dropIndex, or right edge of the last one
     function dropMarkerPos() {
-        if (dropIndex < 0 || order.length === 0) {
+        const from = order.indexOf(dragRow);
+        if (dropIndex < 0 || order.length === 0 || dropIndex === from || dropIndex === from + 1) {
             return null;
         }
         const atEnd = dropIndex >= order.length;
@@ -358,7 +363,7 @@ ListView {
 
                     required property int modelData
                     readonly property int row: modelData
-                    readonly property var item: view.dataAt(row)
+                    readonly property var item: (view.dataRevision, view.dataAt(row))
                     readonly property bool highlighted: view.dragRow < 0 && (containsMouse || (view.keyboardNav && view.current === row))
                     readonly property bool dragged: view.dragRow === row
                     property point pressPos

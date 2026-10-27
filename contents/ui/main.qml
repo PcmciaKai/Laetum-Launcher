@@ -32,11 +32,7 @@ PlasmoidItem {
         + "[ -n \"$a\" ] || a=$(kreadconfig6 --group Colors:Selection --key BackgroundNormal); echo \"$a\"'"
 
     function refreshAccent() {
-        if (Plasmoid.configuration.useSystemAccent) {
-            accentReader.connectSource(accentCommand);
-        } else {
-            accentColor = Qt.binding(() => Kirigami.Theme.highlightColor);
-        }
+        accentReader.connectSource(accentCommand);
     }
 
     P5Support.DataSource {
@@ -48,13 +44,6 @@ PlasmoidItem {
                 root.accentColor = Qt.rgba(parts[0] / 255, parts[1] / 255, parts[2] / 255, 1);
             }
             disconnectSource(source);
-        }
-    }
-
-    Connections {
-        target: Plasmoid.configuration
-        function onUseSystemAccentChanged() {
-            root.refreshAccent();
         }
     }
 

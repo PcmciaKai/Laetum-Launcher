@@ -11,9 +11,17 @@ KCM.SimpleKCM {
     property alias cfg_defaultTab: tabCombo.currentIndex
     property alias cfg_storeApp: storeField.text
     property alias cfg_showRecent: recentCheck.checked
-    property alias cfg_useSystemAccent: accentCheck.checked
     property var cfg_categoryTabs: []
     property var cfg_availableCategories: []
+
+    // Defaults Plasma passes in alongside the values
+    property string cfg_iconDefault
+    property int cfg_columnsDefault
+    property int cfg_defaultTabDefault
+    property string cfg_storeAppDefault
+    property bool cfg_showRecentDefault
+    property var cfg_categoryTabsDefault
+    property var cfg_availableCategoriesDefault
 
     Kirigami.FormLayout {
         QQC2.Button {
@@ -34,12 +42,6 @@ KCM.SimpleKCM {
             Kirigami.FormData.label: i18n("Grid columns:")
             from: 3
             to: 8
-        }
-
-        QQC2.CheckBox {
-            id: accentCheck
-            Kirigami.FormData.label: i18n("Accent colour:")
-            text: i18n("Use the KDE colour scheme's accent")
         }
 
         QQC2.TextField {
