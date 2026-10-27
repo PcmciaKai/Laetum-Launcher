@@ -37,8 +37,10 @@ ListView {
     bottomMargin: Kirigami.Units.largeSpacing
     reuseItems: false
 
-    // Pre-create a few lines past the viewport so icons are loaded before they scroll in
-    cacheBuffer: menuView.cellSize * 3
+    // Header lines are shorter than tile lines, so ListView would only estimate contentHeight
+    // and the scrollbar would jump as it corrects itself. Keep every line instantiated so
+    // the height is exact (a few hundred apps at most).
+    cacheBuffer: Math.max(menuView.cellSize * 3, lines.length * menuView.cellSize)
 
     PC3.ScrollBar.vertical: PC3.ScrollBar {
         id: vbar
