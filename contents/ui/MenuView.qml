@@ -250,6 +250,12 @@ FocusScope {
                     }
                 }
                 HeaderButton {
+                    visible: Plasmoid.configuration.terminalApp !== ""
+                    iconName: "utilities-terminal-symbolic"
+                    tooltip: i18n("Terminal")
+                    onClicked: menu.runApp(Plasmoid.configuration.terminalApp)
+                }
+                HeaderButton {
                     iconName: "configure-symbolic"
                     tooltip: i18n("System Settings")
                     onClicked: {

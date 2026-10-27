@@ -10,6 +10,7 @@ KCM.SimpleKCM {
     property alias cfg_columns: columnsSpin.value
     property alias cfg_defaultTab: tabCombo.currentIndex
     property alias cfg_storeApp: storeField.text
+    property alias cfg_terminalApp: terminalField.text
     property alias cfg_showRecent: recentCheck.checked
     property var cfg_categoryTabs: []
     property var cfg_availableCategories: []
@@ -19,6 +20,7 @@ KCM.SimpleKCM {
     property int cfg_columnsDefault
     property int cfg_defaultTabDefault
     property string cfg_storeAppDefault
+    property string cfg_terminalAppDefault
     property bool cfg_showRecentDefault
     property var cfg_categoryTabsDefault
     property var cfg_availableCategoriesDefault
@@ -46,8 +48,14 @@ KCM.SimpleKCM {
 
         QQC2.TextField {
             id: storeField
-            Kirigami.FormData.label: i18n("Store app (desktop file id):")
+            Kirigami.FormData.label: i18n("Store app:")
             placeholderText: i18n("Leave empty to hide the store button")
+        }
+
+        QQC2.TextField {
+            id: terminalField
+            Kirigami.FormData.label: i18n("Terminal app:")
+            placeholderText: i18n("Leave empty to hide the terminal button")
         }
 
         Kirigami.Separator {

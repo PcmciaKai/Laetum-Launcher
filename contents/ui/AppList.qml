@@ -26,6 +26,13 @@ ListView {
         id: vbar
     }
 
+    // Smooth, even wheel/touchpad scrolling like Plasma's own scroll views
+    Kirigami.WheelHandler {
+        target: list
+        filterMouseEvents: true
+        keyNavigationEnabled: false
+    }
+
     function reset() {
         currentIndex = -1;
         keyboardNav = false;

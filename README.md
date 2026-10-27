@@ -10,7 +10,7 @@ The design is modelled after the [Start Menu Concept](https://dribbble.com/shots
 - **All Apps** grouped under A–Z headers
 - **Optional category tabs** (e.g. Games, Development, "Brave Browser Apps"), picked in settings
 - **Search** across all KRunner plugins, with a filter for Everything / Apps / Files / Settings
-- **Header** with your avatar and name, plus buttons for the software store, Files, System Settings and Power (lock, sleep, hibernate, restart, shut down, switch user, log out)
+- **Header** with your avatar and name, plus buttons for the software store, Files, Terminal, System Settings and Power (lock, sleep, hibernate, restart, shut down, switch user, log out)
 - Uses your **colour scheme's accent colour**, even with Plasma styles that ship their own highlight colour
 - Opaque header over a translucent body that follows your Plasma style's blur
 - **Keyboard friendly:** type to search, arrow keys to move, Enter to launch, Tab to switch tabs, Menu key for the context menu, Esc to clear or close
@@ -49,7 +49,8 @@ Right-click the icon → **Configure Laetum Launcher…**
 | --- | --- |
 | Panel icon | The icon shown on the panel |
 | Grid columns | Number of app tiles per row (3–8) |
-| Store app | Desktop file ID launched by the store button (default `org.dnf.AppCenter`, the DNF App Center); leave it empty to hide the button |
+| Store app | Desktop file ID or command launched by the store button (default `org.dnf.AppCenter`, the DNF App Center); leave it empty to hide the button |
+| Terminal app | Desktop file ID or command launched by the terminal button (default `org.kde.konsole`); leave it empty to hide the button |
 | Show the Recent tab | Show or hide the Recent tab |
 | Open on tab | Which tab the menu opens on |
 | Category tabs | Extra tabs for any of your application categories |

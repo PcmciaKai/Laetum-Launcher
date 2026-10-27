@@ -37,8 +37,18 @@ ListView {
     bottomMargin: Kirigami.Units.largeSpacing
     reuseItems: false
 
+    // Pre-create a few lines past the viewport so icons are loaded before they scroll in
+    cacheBuffer: menuView.cellSize * 3
+
     PC3.ScrollBar.vertical: PC3.ScrollBar {
         id: vbar
+    }
+
+    // Smooth, even wheel/touchpad scrolling like Plasma's own scroll views
+    Kirigami.WheelHandler {
+        target: view
+        filterMouseEvents: true
+        keyNavigationEnabled: false
     }
 
     function dataAt(row) {

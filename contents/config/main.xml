@@ -16,6 +16,9 @@
     <entry name="storeApp" type="String">
       <default>org.dnf.AppCenter</default>
     </entry>
+    <entry name="terminalApp" type="String">
+      <default>org.kde.konsole</default>
+    </entry>
     <entry name="showRecent" type="Bool">
       <default>true</default>
     </entry>
