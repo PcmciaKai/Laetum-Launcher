@@ -335,8 +335,9 @@ FocusScope {
                 id: pinnedView
                 menuView: menu
                 sourceModel: root.rootModel.favoritesModel
+                reorderable: true
                 placeholder: i18n("Nothing pinned yet")
-                placeholderExplanation: i18n("Right-click any app and choose “Add to Favorites”")
+                placeholderExplanation: i18n("Right-click any app and choose “Add to Favorites”. Drag pinned apps to reorder them.")
             }
             AppList {
                 id: recentView
@@ -417,7 +418,10 @@ FocusScope {
                             break;
                         case Qt.Key_Left:
                         case Qt.Key_Right:
-                            if (text === "" && v.isGrid) {
+                            if ((event.modifiers & Qt.ControlModifier) && v.reorderable) {
+                                v.moveCurrentBy(event.key === Qt.Key_Right ? 1 : -1);
+                                event.accepted = true;
+                            } else if (text === "" && v.isGrid) {
                                 v.moveKey(event.key);
                                 event.accepted = true;
                             }

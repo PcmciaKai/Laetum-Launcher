@@ -14,6 +14,7 @@ ListView {
     property bool sectioned: false
     property string placeholder
     property string placeholderExplanation
+    property bool reorderable: false  // drag tiles to reorder (sourceModel must offer moveRow)
 
     readonly property bool isGrid: true
     property int current: -1          // row in sourceModel
@@ -126,6 +127,116 @@ ListView {
         function onModelReset() {
             view.scheduleRebuild();
         }
+    }
+
+    // ---- Reordering ----
+    property int dragRow: -1
+    property real dragX: 0
+    property real dragY: 0
+    property int dropIndex: -1        // insert before this display position
+    property bool suppressClick: false
+
+    function beginDrag(row) {
+        dragRow = row;
+        current = -1;
+        interactive = false;
+    }
+
+    function updateDrag(x, y) {
+        dragX = x;
+        dragY = y;
+        // Nudge the view when dragging near its edges
+        const edge = menuView.cellSize / 3;
+        if (y < edge) {
+            contentY = Math.max(originY - topMargin, contentY - 8);
+        } else if (y > height - edge) {
+            contentY = Math.min(originY + contentHeight - height + bottomMargin, contentY + 8);
+        }
+        const lineIdx = indexAt(Math.min(x, cellWidth * columns - 1), y + contentY);
+        if (lineIdx < 0) {
+            dropIndex = y + contentY < originY ? 0 : order.length;
+            return;
+        }
+        const items = lines[lineIdx].items;
+        if (!items) {
+            return;
+        }
+        const col = Math.max(0, Math.floor(x / cellWidth));
+        if (col >= items.length) {
+            dropIndex = order.indexOf(items[items.length - 1]) + 1;
+        } else {
+            const after = x - col * cellWidth > cellWidth / 2;
+            dropIndex = order.indexOf(items[col]) + (after ? 1 : 0);
+        }
+    }
+
+    function endDrag() {
+        const from = order.indexOf(dragRow);
+        if (from >= 0 && dropIndex >= 0) {
+            const to = dropIndex > from ? dropIndex - 1 : dropIndex;
+            if (to !== from) {
+                sourceModel.moveRow(from, to);
+            }
+        }
+        dragRow = -1;
+        dropIndex = -1;
+        interactive = true;
+        suppressClick = true;
+    }
+
+    // Keyboard reordering (Ctrl+arrows) of the current tile
+    function moveCurrentBy(step) {
+        const from = order.indexOf(current);
+        const to = from + step;
+        if (!reorderable || from < 0 || to < 0 || to >= order.length) {
+            return;
+        }
+        keyboardNav = true;
+        sourceModel.moveRow(from, to);
+        current = to;
+        Qt.callLater(() => ensureVisible(current));
+    }
+
+    // Where the drop marker goes: left edge of the tile at dropIndex, or right edge of the last one
+    function dropMarkerPos() {
+        if (dropIndex < 0 || order.length === 0) {
+            return null;
+        }
+        const atEnd = dropIndex >= order.length;
+        const row = order[atEnd ? order.length - 1 : dropIndex];
+        const p = positions[row];
+        const lineItem = p ? itemAtIndex(p.line) : null;
+        if (!lineItem) {
+            return null;
+        }
+        const pt = lineItem.mapToItem(view, (p.col + (atEnd ? 1 : 0)) * cellWidth, 0);
+        return { x: pt.x, y: pt.y };
+    }
+
+    Rectangle {
+        id: dropMarker
+        readonly property var pos: view.dragRow >= 0 ? (view.contentY, view.dropIndex, view.dropMarkerPos()) : null
+        visible: pos !== null
+        z: 10
+        x: pos ? pos.x - width / 2 : 0
+        y: pos ? pos.y + view.menuView.cellSize * 0.15 : 0
+        width: 3
+        height: view.menuView.cellSize * 0.7
+        radius: 1.5
+        color: view.menuView.accent
+    }
+
+    Kirigami.Icon {
+        id: dragGhost
+        readonly property var entry: view.dragRow >= 0 ? view.dataAt(view.dragRow) : null
+        visible: entry !== null
+        z: 11
+        width: Kirigami.Units.iconSizes.large
+        height: width
+        x: view.dragX - width / 2
+        y: view.dragY - height / 2
+        source: entry ? entry.decoration : ""
+        opacity: 0.85
     }
 
     function reset() {
@@ -248,7 +359,12 @@ ListView {
                     required property int modelData
                     readonly property int row: modelData
                     readonly property var item: view.dataAt(row)
-                    readonly property bool highlighted: containsMouse || (view.keyboardNav && view.current === row)
+                    readonly property bool highlighted: view.dragRow < 0 && (containsMouse || (view.keyboardNav && view.current === row))
+                    readonly property bool dragged: view.dragRow === row
+                    property point pressPos
+
+                    opacity: dragged ? 0.3 : 1
+                    preventStealing: view.reorderable
 
                     width: view.cellWidth
                     height: view.menuView.cellSize
@@ -259,7 +375,39 @@ ListView {
                         view.menuView.openContextMenu(tile, view.sourceModel, row, item ? item.actionList : null, item ? item.favoriteId : "", x, y);
                     }
 
+                    onPressed: (mouse) => {
+                        pressPos = Qt.point(mouse.x, mouse.y);
+                        view.suppressClick = false;
+                    }
+                    onPositionChanged: (mouse) => {
+                        if (!view.reorderable || !(mouse.buttons & Qt.LeftButton)) {
+                            return;
+                        }
+                        const p = mapToItem(view, mouse.x, mouse.y);
+                        if (view.dragRow < 0) {
+                            if (Math.hypot(mouse.x - pressPos.x, mouse.y - pressPos.y) < Qt.styleHints.startDragDistance) {
+                                return;
+                            }
+                            view.beginDrag(row);
+                        }
+                        view.updateDrag(p.x, p.y);
+                    }
+                    onReleased: {
+                        if (view.dragRow >= 0) {
+                            view.endDrag();
+                        }
+                    }
+                    onCanceled: {
+                        if (view.dragRow >= 0) {
+                            view.dropIndex = -1;
+                            view.endDrag();
+                        }
+                    }
+
                     onEntered: {
+                        if (view.dragRow >= 0) {
+                            return;
+                        }
                         view.keyboardNav = false;
                         view.current = row;
                     }
@@ -269,6 +417,9 @@ ListView {
                         }
                     }
                     onClicked: (mouse) => {
+                        if (view.suppressClick) {
+                            return;
+                        }
                         if (mouse.button === Qt.RightButton) {
                             openMenu(mouse.x, mouse.y);
                         } else {

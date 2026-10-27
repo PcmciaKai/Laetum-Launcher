@@ -14,6 +14,7 @@ A modern application launcher (start menu) for KDE Plasma 6, built on the same b
 - **Keyboard friendly:** type to search, arrow keys to move, Enter to launch, Tab to switch tabs, Menu key for the context menu, Esc to clear or close
 - Opens with the **Meta key**, like Kickoff
 - Right-click any app to pin or unpin it and for its other actions
+- **Drag pinned apps to reorder them** (or select one with the arrow keys and press Ctrl+Left/Right)
 
 ## Requirements
 
