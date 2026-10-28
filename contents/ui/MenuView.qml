@@ -45,6 +45,13 @@ FocusScope {
     readonly property var tabViews: ({ pinned: pinnedView, recent: recentView, all: appsView, category: categoryView })
     readonly property var activeView: searching ? resultsView : tabViews[tab.kind]
 
+    // Header icons: Small / Medium / Large; spacing between them scales along
+    readonly property int headerIconSize: Math.round(Kirigami.Units.iconSizes.smallMedium * [1, 1.3, 1.6][Math.max(0, Math.min(2, Plasmoid.configuration.headerIconSize))])
+
+    // Item animations
+    readonly property bool animateHover: Plasmoid.configuration.animateHover
+    readonly property bool animateClick: Plasmoid.configuration.animateClick
+
     readonly property color accent: root.accentColor
     readonly property color hairline: Qt.alpha(Kirigami.Theme.textColor, 0.12)
     readonly property color headerColor: Kirigami.ColorUtils.tintWithAlpha(Kirigami.Theme.backgroundColor, Kirigami.Theme.textColor, 0.08)
@@ -235,39 +242,60 @@ FocusScope {
                     elide: Text.ElideRight
                 }
 
-                HeaderButton {
-                    visible: Plasmoid.configuration.storeApp !== ""
-                    iconName: "amarok_cart_view-symbolic"
-                    tooltip: i18n("Software Store")
-                    onClicked: menu.runApp(Plasmoid.configuration.storeApp)
-                }
-                HeaderButton {
-                    iconName: "folder-symbolic"
-                    tooltip: i18n("Files")
-                    onClicked: {
-                        Qt.openUrlExternally(StandardPaths.writableLocation(StandardPaths.HomeLocation));
-                        root.expanded = false;
+                RowLayout {
+                    spacing: Math.round(menu.headerIconSize * 0.5)
+
+                    HeaderButton {
+                        visible: Plasmoid.configuration.showStoreButton && Plasmoid.configuration.storeApp !== ""
+                        iconSize: menu.headerIconSize
+                        iconName: "amarok_cart_view-symbolic"
+                        tooltip: i18n("Software Store")
+                        onClicked: menu.runApp(Plasmoid.configuration.storeApp)
                     }
-                }
-                HeaderButton {
-                    visible: Plasmoid.configuration.terminalApp !== ""
-                    iconName: "utilities-terminal-symbolic"
-                    tooltip: i18n("Terminal")
-                    onClicked: menu.runApp(Plasmoid.configuration.terminalApp)
-                }
-                HeaderButton {
-                    iconName: "configure-symbolic"
-                    tooltip: i18n("System Settings")
-                    onClicked: {
-                        KCMUtils.KCMLauncher.openSystemSettings("");
-                        root.expanded = false;
+                    HeaderButton {
+                        visible: Plasmoid.configuration.showFilesButton
+                        iconSize: menu.headerIconSize
+                        iconName: "folder-symbolic"
+                        tooltip: i18n("Files")
+                        onClicked: {
+                            Qt.openUrlExternally(StandardPaths.writableLocation(StandardPaths.HomeLocation));
+                            root.expanded = false;
+                        }
                     }
-                }
-                HeaderButton {
-                    id: powerButton
-                    iconName: "system-shutdown-symbolic"
-                    tooltip: i18n("Power")
-                    onClicked: powerMenu.openRelative()
+                    HeaderButton {
+                        visible: Plasmoid.configuration.showTerminalButton && Plasmoid.configuration.terminalApp !== ""
+                        iconSize: menu.headerIconSize
+                        iconName: "utilities-terminal-symbolic"
+                        tooltip: i18n("Terminal")
+                        onClicked: menu.runApp(Plasmoid.configuration.terminalApp)
+                    }
+                    HeaderButton {
+                        visible: Plasmoid.configuration.showSettingsButton
+                        iconSize: menu.headerIconSize
+                        iconName: "configure-symbolic"
+                        tooltip: i18n("System Settings")
+                        onClicked: {
+                            KCMUtils.KCMLauncher.openSystemSettings("");
+                            root.expanded = false;
+                        }
+                    }
+                    HeaderButton {
+                        visible: Plasmoid.configuration.showInfoCenterButton
+                        iconSize: menu.headerIconSize
+                        iconName: "documentinfo-symbolic"
+                        tooltip: i18n("Info Center")
+                        onClicked: {
+                            KCMUtils.KCMLauncher.openInfoCenter("");
+                            root.expanded = false;
+                        }
+                    }
+                    HeaderButton {
+                        id: powerButton
+                        iconSize: menu.headerIconSize
+                        iconName: "system-shutdown-symbolic"
+                        tooltip: i18n("Power")
+                        onClicked: powerMenu.openRelative()
+                    }
                 }
             }
         }
@@ -286,7 +314,8 @@ FocusScope {
             Layout.preferredHeight: Kirigami.Units.gridUnit * 2.6
             orientation: ListView.Horizontal
             spacing: Kirigami.Units.smallSpacing
-            clip: true
+            // Only clip when the tabs overflow, so the indicator can sit on the hairline above
+            clip: interactive
             interactive: contentWidth > width
             boundsBehavior: Flickable.StopAtBounds
             model: menu.tabs
@@ -300,7 +329,8 @@ FocusScope {
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.margins: Kirigami.Units.largeSpacing
-                    y: 0
+                    // Centred on the 1px hairline directly above the tab row
+                    y: -2
                     height: 3
                     radius: 1.5
                     color: menu.accent

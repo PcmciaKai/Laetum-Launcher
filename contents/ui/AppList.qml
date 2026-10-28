@@ -127,6 +127,16 @@ ListView {
                 Layout.preferredWidth: Kirigami.Units.iconSizes.medium
                 Layout.preferredHeight: Kirigami.Units.iconSizes.medium
                 source: row.model.decoration
+
+                // Optional hover grow and press squeeze with a springy release
+                scale: list.menuView.animateClick && row.pressed ? 0.86 : (list.menuView.animateHover && row.highlighted ? 1.12 : 1)
+                Behavior on scale {
+                    NumberAnimation {
+                        duration: Kirigami.Units.longDuration
+                        easing.type: row.pressed ? Easing.OutCubic : Easing.OutBack
+                        easing.overshoot: 2.5
+                    }
+                }
             }
 
             ColumnLayout {

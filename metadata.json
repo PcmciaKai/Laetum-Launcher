@@ -11,7 +11,7 @@
         "Id": "local.laetum",
         "License": "GPL-3.0-or-later",
         "Name": "Laetum Launcher",
-        "Version": "1.2"
+        "Version": "1.3"
     },
     "KPackageStructure": "Plasma/Applet",
     "X-Plasma-API-Minimum-Version": "6.0",

@@ -462,9 +462,24 @@ ListView {
                             Layout.alignment: Qt.AlignHCenter
                             Layout.preferredWidth: Kirigami.Units.iconSizes.large
                             Layout.preferredHeight: Kirigami.Units.iconSizes.large
+                            id: tileIcon
                             source: tile.item ? tile.item.decoration : ""
-                            scale: tile.pressed ? 0.9 : 1
-                            Behavior on scale { NumberAnimation { duration: Kirigami.Units.shortDuration } }
+
+                            // Optional hover lift/grow and press squeeze with a springy release
+                            readonly property bool lifted: view.menuView.animateHover && tile.highlighted && !tile.pressed
+                            readonly property bool squeezed: view.menuView.animateClick && tile.pressed
+                            scale: squeezed ? 0.86 : (lifted ? 1.1 : 1)
+                            Behavior on scale {
+                                NumberAnimation {
+                                    duration: Kirigami.Units.longDuration
+                                    easing.type: tile.pressed ? Easing.OutCubic : Easing.OutBack
+                                    easing.overshoot: 2.5
+                                }
+                            }
+                            transform: Translate {
+                                y: tileIcon.lifted ? -Kirigami.Units.smallSpacing : 0
+                                Behavior on y { NumberAnimation { duration: Kirigami.Units.longDuration; easing.type: Easing.OutCubic } }
+                            }
                         }
 
                         PC3.Label {

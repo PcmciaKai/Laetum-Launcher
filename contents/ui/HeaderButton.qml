@@ -7,10 +7,11 @@ PC3.ToolButton {
 
     property string iconName
     property string tooltip
+    property int iconSize: Kirigami.Units.iconSizes.smallMedium
 
     icon.name: iconName
-    icon.width: Kirigami.Units.iconSizes.smallMedium
-    icon.height: Kirigami.Units.iconSizes.smallMedium
+    icon.width: iconSize
+    icon.height: iconSize
     display: PC3.AbstractButton.IconOnly
     text: tooltip
     flat: true

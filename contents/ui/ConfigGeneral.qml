@@ -12,6 +12,14 @@ KCM.SimpleKCM {
     property alias cfg_storeApp: storeField.text
     property alias cfg_terminalApp: terminalField.text
     property alias cfg_showRecent: recentCheck.checked
+    property alias cfg_showStoreButton: storeCheck.checked
+    property alias cfg_showFilesButton: filesCheck.checked
+    property alias cfg_showTerminalButton: terminalCheck.checked
+    property alias cfg_showSettingsButton: settingsCheck.checked
+    property alias cfg_showInfoCenterButton: infoCheck.checked
+    property alias cfg_headerIconSize: iconSizeCombo.currentIndex
+    property alias cfg_animateHover: hoverCheck.checked
+    property alias cfg_animateClick: clickCheck.checked
     property var cfg_categoryTabs: []
     property var cfg_availableCategories: []
 
@@ -22,6 +30,14 @@ KCM.SimpleKCM {
     property string cfg_storeAppDefault
     property string cfg_terminalAppDefault
     property bool cfg_showRecentDefault
+    property bool cfg_showStoreButtonDefault
+    property bool cfg_showFilesButtonDefault
+    property bool cfg_showTerminalButtonDefault
+    property bool cfg_showSettingsButtonDefault
+    property bool cfg_showInfoCenterButtonDefault
+    property int cfg_headerIconSizeDefault
+    property bool cfg_animateHoverDefault
+    property bool cfg_animateClickDefault
     property var cfg_categoryTabsDefault
     property var cfg_availableCategoriesDefault
 
@@ -46,16 +62,74 @@ KCM.SimpleKCM {
             to: 8
         }
 
-        QQC2.TextField {
-            id: storeField
-            Kirigami.FormData.label: i18n("Store app:")
-            placeholderText: i18n("Leave empty to hide the store button")
+        Kirigami.Separator {
+            Kirigami.FormData.isSection: true
+            Kirigami.FormData.label: i18n("Header")
         }
 
+        QQC2.ComboBox {
+            id: iconSizeCombo
+            Kirigami.FormData.label: i18n("Button size:")
+            model: [i18n("Small"), i18n("Medium"), i18n("Large")]
+        }
+
+        QQC2.CheckBox {
+            id: storeCheck
+            Kirigami.FormData.label: i18n("Buttons:")
+            text: i18n("Software store")
+        }
+        QQC2.TextField {
+            id: storeField
+            enabled: storeCheck.checked
+            Layout.leftMargin: Kirigami.Units.gridUnit
+            placeholderText: i18n("Desktop file ID or command")
+        }
+
+        QQC2.CheckBox {
+            id: filesCheck
+            text: i18n("Files")
+        }
+
+        QQC2.CheckBox {
+            id: terminalCheck
+            text: i18n("Terminal")
+        }
         QQC2.TextField {
             id: terminalField
-            Kirigami.FormData.label: i18n("Terminal app:")
-            placeholderText: i18n("Leave empty to hide the terminal button")
+            enabled: terminalCheck.checked
+            Layout.leftMargin: Kirigami.Units.gridUnit
+            placeholderText: i18n("Desktop file ID or command")
+        }
+
+        QQC2.CheckBox {
+            id: settingsCheck
+            text: i18n("System Settings")
+        }
+
+        QQC2.CheckBox {
+            id: infoCheck
+            text: i18n("Info Center")
+        }
+
+        QQC2.Label {
+            text: i18n("The power button is always shown.")
+            opacity: 0.7
+        }
+
+        Kirigami.Separator {
+            Kirigami.FormData.isSection: true
+            Kirigami.FormData.label: i18n("Items")
+        }
+
+        QQC2.CheckBox {
+            id: hoverCheck
+            Kirigami.FormData.label: i18n("Animations:")
+            text: i18n("Animate on hover")
+        }
+
+        QQC2.CheckBox {
+            id: clickCheck
+            text: i18n("Animate on click")
         }
 
         Kirigami.Separator {
