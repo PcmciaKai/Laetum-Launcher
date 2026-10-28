@@ -6,10 +6,12 @@ PC3.ToolButton {
     id: button
 
     property string iconName
+    property url iconSource          // a bundled SVG instead of a theme icon
     property string tooltip
     property int iconSize: Kirigami.Units.iconSizes.smallMedium
 
     icon.name: iconName
+    icon.source: iconSource
     icon.width: iconSize
     icon.height: iconSize
     display: PC3.AbstractButton.IconOnly

@@ -255,7 +255,7 @@ FocusScope {
                     HeaderButton {
                         visible: Plasmoid.configuration.showStoreButton && Plasmoid.configuration.storeApp !== ""
                         iconSize: menu.headerIconSize
-                        iconName: "amarok_cart_view-symbolic"
+                        iconSource: Qt.resolvedUrl("../icons/store-symbolic.svg")
                         tooltip: i18n("Software Store")
                         onClicked: menu.runApp(Plasmoid.configuration.storeApp)
                     }
