@@ -52,7 +52,7 @@ Right-click the icon → **Configure Laetum Launcher…**
 | --- | --- |
 | Panel icon | The icon shown on the panel |
 | Grid columns | Number of app tiles per row (3–8) |
-| Header → Button size | Small, Medium or Large header buttons; the spacing grows with them |
+| Header → Button size | Small, Medium (default) or Large header buttons; the spacing grows with them |
 | Header → Buttons | Show or hide the Software store, Files, Terminal, System Settings and Info Center buttons (Info Center is off by default; Power is always shown) |
 | Software store app | Desktop file ID or command for the store button (default `org.dnf.AppCenter`, the DNF App Center) |
 | Terminal app | Desktop file ID or command for the terminal button (default `org.kde.konsole`) |

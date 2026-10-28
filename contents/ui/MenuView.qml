@@ -21,8 +21,13 @@ FocusScope {
 
     Layout.preferredWidth: columns * cellSize + pad * 3
     Layout.minimumWidth: Layout.preferredWidth
-    Layout.preferredHeight: Kirigami.Units.gridUnit * 30
-    Layout.minimumHeight: Kirigami.Units.gridUnit * 24
+    // Tall enough for three full rows of tiles (scales with the header button size);
+    // the minimum still fits two
+    readonly property int chromeHeight: header.implicitHeight + 1 + tabList.Layout.preferredHeight
+        + Kirigami.Units.largeSpacing * 2 + searchBar.Layout.preferredHeight + pad * 2
+        + Kirigami.Units.smallSpacing // slack so rounding never tips the grid into scrolling
+    Layout.preferredHeight: chromeHeight + cellSize * 3
+    Layout.minimumHeight: chromeHeight + cellSize * 2
 
     // Tabs: Pinned, optional Recent, All Apps, then any categories picked in settings
     readonly property var tabs: {
@@ -426,6 +431,7 @@ FocusScope {
 
         // Search bar
         Rectangle {
+            id: searchBar
             Layout.fillWidth: true
             Layout.margins: menu.pad
             Layout.preferredHeight: Kirigami.Units.gridUnit * 2.6
