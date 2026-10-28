@@ -40,6 +40,11 @@ FocusScope {
         return t;
     }
     property int currentTab: 0
+    onTabsChanged: {
+        if (currentTab >= tabs.length) {
+            currentTab = 0;
+        }
+    }
     readonly property var tab: tabs[Math.min(currentTab, tabs.length - 1)]
     readonly property bool searching: root.searchText.length > 0
     readonly property var tabViews: ({ pinned: pinnedView, recent: recentView, all: appsView, category: categoryView })
@@ -79,7 +84,9 @@ FocusScope {
     }
 
     function run(command) {
-        executable.connectSource(command);
+        // The executable engine ignores a source that is still connected, so make each
+        // launch unique; otherwise a quick second click on the same button does nothing
+        executable.connectSource(command + " # " + Date.now());
         root.expanded = false;
     }
 

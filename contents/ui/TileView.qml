@@ -29,6 +29,29 @@ ListView {
     property var positions: ({})      // row -> {line, col}
     property int dataRevision: 0      // bumped on rebuild so tiles re-read their row's data
 
+    // Line geometry is known up front, so lines can tell whether they are near the viewport
+    // before the ListView has positioned them
+    readonly property font headerFont: Qt.font({
+        family: Kirigami.Theme.defaultFont.family,
+        pointSize: Kirigami.Theme.defaultFont.pointSize * 1.15,
+        weight: Font.DemiBold
+    })
+    readonly property int headerLineHeight: Math.ceil(headerMetrics.height) + Kirigami.Units.largeSpacing * 2
+    readonly property var lineOffsets: {
+        const offsets = [];
+        let y = 0;
+        for (const l of lines) {
+            offsets.push(y);
+            y += l.header !== undefined ? headerLineHeight : menuView.cellSize;
+        }
+        return offsets;
+    }
+
+    FontMetrics {
+        id: headerMetrics
+        font: view.headerFont
+    }
+
     model: lines
     clip: true
     boundsBehavior: Flickable.StopAtBounds
@@ -39,7 +62,8 @@ ListView {
 
     // Header lines are shorter than tile lines, so ListView would only estimate contentHeight
     // and the scrollbar would jump as it corrects itself. Keep every line instantiated so
-    // the height is exact (a few hundred apps at most).
+    // the height is exact; lines only load their icons and labels once they come near the
+    // viewport (see line.shown), which keeps this cheap.
     cacheBuffer: Math.max(menuView.cellSize * 3, lines.length * menuView.cellSize)
 
     PC3.ScrollBar.vertical: PC3.ScrollBar {
@@ -330,14 +354,25 @@ ListView {
         id: line
 
         required property var modelData
+        required property int index
         readonly property bool isHeader: modelData.header !== undefined
+
+        // Load tile contents once the line is within half a viewport of being visible;
+        // once loaded it stays loaded so scrolling back doesn't reload icons
+        property bool shown: false
+        readonly property real lineTop: view.lineOffsets[index] ?? 0
+        readonly property bool nearViewport: view.height > 0
+            && lineTop + height >= view.contentY - view.height / 2
+            && lineTop <= view.contentY + view.height * 1.5
+        onNearViewportChanged: if (nearViewport) shown = true
+        Component.onCompleted: if (nearViewport) shown = true
 
         function tileAt(col) {
             return tileRepeater.itemAt(col);
         }
 
         width: view.width - view.scrollBarSpace
-        height: isHeader ? headerLabel.implicitHeight + Kirigami.Units.largeSpacing * 2 : view.menuView.cellSize
+        height: isHeader ? view.headerLineHeight : view.menuView.cellSize
 
         PC3.Label {
             id: headerLabel
@@ -348,8 +383,7 @@ ListView {
             anchors.bottomMargin: Kirigami.Units.smallSpacing
             text: line.modelData.header ?? ""
             color: view.menuView.accent
-            font.weight: Font.DemiBold
-            font.pointSize: Kirigami.Theme.defaultFont.pointSize * 1.15
+            font: view.headerFont
         }
 
         Rectangle {
@@ -453,42 +487,51 @@ ListView {
                         Behavior on opacity { NumberAnimation { duration: Kirigami.Units.shortDuration } }
                     }
 
-                    ColumnLayout {
+                    Loader {
                         anchors.centerIn: parent
                         width: parent.width - Kirigami.Units.largeSpacing * 2
-                        spacing: Kirigami.Units.largeSpacing
+                        active: line.shown
+                        sourceComponent: tileContent
+                    }
 
-                        Kirigami.Icon {
-                            Layout.alignment: Qt.AlignHCenter
-                            Layout.preferredWidth: Kirigami.Units.iconSizes.large
-                            Layout.preferredHeight: Kirigami.Units.iconSizes.large
-                            id: tileIcon
-                            source: tile.item ? tile.item.decoration : ""
+                    Component {
+                        id: tileContent
 
-                            // Optional hover lift/grow and press squeeze with a springy release
-                            readonly property bool lifted: view.menuView.animateHover && tile.highlighted && !tile.pressed
-                            readonly property bool squeezed: view.menuView.animateClick && tile.pressed
-                            scale: squeezed ? 0.86 : (lifted ? 1.1 : 1)
-                            Behavior on scale {
-                                NumberAnimation {
-                                    duration: Kirigami.Units.longDuration
-                                    easing.type: tile.pressed ? Easing.OutCubic : Easing.OutBack
-                                    easing.overshoot: 2.5
+                        ColumnLayout {
+                            spacing: Kirigami.Units.largeSpacing
+
+                            Kirigami.Icon {
+                                id: tileIcon
+                                Layout.alignment: Qt.AlignHCenter
+                                Layout.preferredWidth: Kirigami.Units.iconSizes.large
+                                Layout.preferredHeight: Kirigami.Units.iconSizes.large
+                                source: tile.item ? tile.item.decoration : ""
+
+                                // Optional hover lift/grow and press squeeze with a springy release
+                                readonly property bool lifted: view.menuView.animateHover && tile.highlighted && !tile.pressed
+                                readonly property bool squeezed: view.menuView.animateClick && tile.pressed
+                                scale: squeezed ? 0.86 : (lifted ? 1.1 : 1)
+                                Behavior on scale {
+                                    NumberAnimation {
+                                        duration: Kirigami.Units.longDuration
+                                        easing.type: tile.pressed ? Easing.OutCubic : Easing.OutBack
+                                        easing.overshoot: 2.5
+                                    }
+                                }
+                                transform: Translate {
+                                    y: tileIcon.lifted ? -Kirigami.Units.smallSpacing : 0
+                                    Behavior on y { NumberAnimation { duration: Kirigami.Units.longDuration; easing.type: Easing.OutCubic } }
                                 }
                             }
-                            transform: Translate {
-                                y: tileIcon.lifted ? -Kirigami.Units.smallSpacing : 0
-                                Behavior on y { NumberAnimation { duration: Kirigami.Units.longDuration; easing.type: Easing.OutCubic } }
-                            }
-                        }
 
-                        PC3.Label {
-                            Layout.fillWidth: true
-                            text: tile.item ? (tile.item.display ?? "") : ""
-                            horizontalAlignment: Text.AlignHCenter
-                            wrapMode: Text.Wrap
-                            maximumLineCount: 2
-                            elide: Text.ElideRight
+                            PC3.Label {
+                                Layout.fillWidth: true
+                                text: tile.item ? (tile.item.display ?? "") : ""
+                                horizontalAlignment: Text.AlignHCenter
+                                wrapMode: Text.Wrap
+                                maximumLineCount: 2
+                                elide: Text.ElideRight
+                            }
                         }
                     }
                 }
