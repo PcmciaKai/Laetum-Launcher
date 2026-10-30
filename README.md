@@ -1,5 +1,9 @@
 # Laetum Launcher
 
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-KDE%20Plasma%206-1D99F3?logo=kde&logoColor=white)](https://kde.org/plasma-desktop/)
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20me-FF5E5B?logo=ko-fi&logoColor=white)](https://ko-fi.com/pcmciakai)
+
 A modern application launcher (start menu) for KDE Plasma 6, built on the same backend models as Kickoff, so it shares your favourites, search runners and app list.
 
 The design is modelled after the [Start Menu Concept](https://dribbble.com/shots/16617776-Start-Menu-Concept-1-2) shot on Dribbble.
