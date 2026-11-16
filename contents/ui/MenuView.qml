@@ -56,7 +56,10 @@ FocusScope {
     readonly property var activeView: searching ? resultsView : tabViews[tab.kind]
 
     // Header icons: Small / Medium / Large; spacing between them scales along
-    readonly property int headerIconSize: Math.round(Kirigami.Units.iconSizes.smallMedium * [1, 1.3, 1.6][Math.max(0, Math.min(2, Plasmoid.configuration.headerIconSize))])
+    // Header, matching Laetum Control Center: Default or Large buttons, Default or Thin height
+    // (headerIconSize 0, the old Small, now shows as Default)
+    readonly property int headerIconSize: Math.round(Kirigami.Units.iconSizes.smallMedium * (Plasmoid.configuration.headerIconSize >= 2 ? 1.6 : 1.3))
+    readonly property bool thinHeader: Plasmoid.configuration.headerHeight === 1
 
     // Item animations
     readonly property bool animateHover: Plasmoid.configuration.animateHover
@@ -209,7 +212,10 @@ FocusScope {
         Item {
             id: header
             Layout.fillWidth: true
-            implicitHeight: headerRow.implicitHeight + Math.round(menu.pad * 1.5)
+            // Thin: about half the default, with just enough room around the buttons
+            implicitHeight: menu.thinHeader
+                ? Math.max(Kirigami.Units.gridUnit * 1.5, headerRow.implicitHeight) + Kirigami.Units.smallSpacing * 2
+                : Math.max(Kirigami.Units.gridUnit * 2.5, headerRow.implicitHeight) + Math.round(menu.pad * 1.5)
 
             Kirigami.ShadowedRectangle {
                 readonly property real cornerRadius: Plasmoid.location === PlasmaCore.Types.TopEdge ? 0 : Kirigami.Units.cornerRadius
@@ -232,8 +238,9 @@ FocusScope {
                 spacing: Kirigami.Units.largeSpacing
 
                 KAComponents.Avatar {
-                    Layout.preferredWidth: Kirigami.Units.gridUnit * 2.5
-                    Layout.preferredHeight: Kirigami.Units.gridUnit * 2.5
+                    // Same sizes as the Control Center's header ring
+                    Layout.preferredWidth: Kirigami.Units.gridUnit * (menu.thinHeader ? 1.6 : 2.5)
+                    Layout.preferredHeight: Layout.preferredWidth
                     source: kuser.faceIconUrl
                     name: kuser.fullName || kuser.loginName
 
@@ -250,7 +257,7 @@ FocusScope {
                 PC3.Label {
                     Layout.fillWidth: true
                     text: kuser.fullName || kuser.loginName
-                    font.pointSize: Kirigami.Theme.defaultFont.pointSize * 1.25
+                    font.pointSize: Kirigami.Theme.defaultFont.pointSize * (menu.thinHeader ? 1 : 1.25)
                     elide: Text.ElideRight
                 }
 
@@ -260,6 +267,7 @@ FocusScope {
                     HeaderButton {
                         visible: Plasmoid.configuration.showStoreButton && Plasmoid.configuration.storeApp !== ""
                         iconSize: menu.headerIconSize
+                        thin: menu.thinHeader
                         iconSource: Qt.resolvedUrl("../icons/store-symbolic.svg")
                         tooltip: i18n("Software Store")
                         onClicked: menu.runApp(Plasmoid.configuration.storeApp)
@@ -267,6 +275,7 @@ FocusScope {
                     HeaderButton {
                         visible: Plasmoid.configuration.showFilesButton
                         iconSize: menu.headerIconSize
+                        thin: menu.thinHeader
                         iconName: "folder-symbolic"
                         tooltip: i18n("Files")
                         onClicked: {
@@ -277,6 +286,7 @@ FocusScope {
                     HeaderButton {
                         visible: Plasmoid.configuration.showTerminalButton && Plasmoid.configuration.terminalApp !== ""
                         iconSize: menu.headerIconSize
+                        thin: menu.thinHeader
                         iconName: "utilities-terminal-symbolic"
                         tooltip: i18n("Terminal")
                         onClicked: menu.runApp(Plasmoid.configuration.terminalApp)
@@ -284,6 +294,7 @@ FocusScope {
                     HeaderButton {
                         visible: Plasmoid.configuration.showSettingsButton
                         iconSize: menu.headerIconSize
+                        thin: menu.thinHeader
                         iconName: "configure-symbolic"
                         tooltip: i18n("System Settings")
                         onClicked: {
@@ -294,6 +305,7 @@ FocusScope {
                     HeaderButton {
                         visible: Plasmoid.configuration.showInfoCenterButton
                         iconSize: menu.headerIconSize
+                        thin: menu.thinHeader
                         iconName: "documentinfo-symbolic"
                         tooltip: i18n("Info Center")
                         onClicked: {
@@ -304,6 +316,7 @@ FocusScope {
                     HeaderButton {
                         id: powerButton
                         iconSize: menu.headerIconSize
+                        thin: menu.thinHeader
                         iconName: "system-shutdown-symbolic"
                         tooltip: i18n("Power")
                         onClicked: powerMenu.openRelative()

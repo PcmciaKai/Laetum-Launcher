@@ -9,6 +9,8 @@ PC3.ToolButton {
     property url iconSource          // a bundled SVG instead of a theme icon
     property string tooltip
     property int iconSize: Kirigami.Units.iconSizes.smallMedium
+    // The thin header: less room above and below the icon
+    property bool thin: false
 
     icon.name: iconName
     icon.source: iconSource
@@ -17,6 +19,8 @@ PC3.ToolButton {
     display: PC3.AbstractButton.IconOnly
     text: tooltip
     flat: true
+    topPadding: thin ? Math.round(Kirigami.Units.smallSpacing / 2) : undefined
+    bottomPadding: thin ? Math.round(Kirigami.Units.smallSpacing / 2) : undefined
 
     PC3.ToolTip.text: tooltip
     PC3.ToolTip.visible: hovered

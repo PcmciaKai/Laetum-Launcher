@@ -6,6 +6,8 @@ import org.kde.kcmutils as KCM
 import org.kde.iconthemes as KIconThemes
 
 KCM.SimpleKCM {
+    id: page
+
     property string cfg_icon
     property alias cfg_columns: columnsSpin.value
     property alias cfg_defaultTab: tabCombo.currentIndex
@@ -17,7 +19,8 @@ KCM.SimpleKCM {
     property alias cfg_showTerminalButton: terminalCheck.checked
     property alias cfg_showSettingsButton: settingsCheck.checked
     property alias cfg_showInfoCenterButton: infoCheck.checked
-    property alias cfg_headerIconSize: iconSizeCombo.currentIndex
+    property int cfg_headerIconSize
+    property alias cfg_headerHeight: headerHeightCombo.currentIndex
     property alias cfg_animateHover: hoverCheck.checked
     property alias cfg_animateClick: clickCheck.checked
     property var cfg_categoryTabs: []
@@ -36,6 +39,7 @@ KCM.SimpleKCM {
     property bool cfg_showSettingsButtonDefault
     property bool cfg_showInfoCenterButtonDefault
     property int cfg_headerIconSizeDefault
+    property int cfg_headerHeightDefault
     property bool cfg_animateHoverDefault
     property bool cfg_animateClickDefault
     property var cfg_categoryTabsDefault
@@ -68,9 +72,18 @@ KCM.SimpleKCM {
         }
 
         QQC2.ComboBox {
+            id: headerHeightCombo
+            Kirigami.FormData.label: i18n("Height:")
+            model: [i18nc("Header height", "Default"), i18nc("Header height", "Thin")]
+        }
+
+        QQC2.ComboBox {
             id: iconSizeCombo
             Kirigami.FormData.label: i18n("Button size:")
-            model: [i18n("Small"), i18n("Medium"), i18n("Large")]
+            model: [i18nc("Header button size", "Default"), i18nc("Header button size", "Large")]
+            // Stored as 1 = Default, 2 = Large; 0 (the old Small) shows as Default
+            currentIndex: page.cfg_headerIconSize >= 2 ? 1 : 0
+            onActivated: index => page.cfg_headerIconSize = index + 1
         }
 
         QQC2.CheckBox {
