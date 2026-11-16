@@ -35,7 +35,7 @@ The design is modelled after the [Start Menu Concept](https://dribbble.com/shots
 Download `laetum-launcher-<version>.plasmoid` from the [Releases](../../releases) page, then:
 
 ```bash
-kpackagetool6 -t Plasma/Applet -i laetum-launcher-1.3.1.plasmoid
+kpackagetool6 -t Plasma/Applet -i laetum-launcher-1.4.plasmoid
 ```
 
 Or from a checkout of this repository:
