@@ -17,6 +17,7 @@ The design is modelled after the [Start Menu Concept](https://dribbble.com/shots
 - **Optional category tabs** (e.g. Games, Development, "Brave Browser Apps"), picked in settings
 - **Search** across all KRunner plugins, with a filter for Everything / Apps / Files / Settings
 - **Header** with your avatar and name, plus buttons for the software store, Files, Terminal, System Settings, Info Center (optional) and Power (lock, sleep, hibernate, restart, shut down, switch user, log out); every button except Power can be toggled, the buttons come in two sizes, and the header comes in a default and a thin height
+- The store button's bag **matches your icon theme**: an outline bag for Breeze and other line-style themes, a filled one for Papirus
 - Optional **hover and click animations** for apps (icons lift on hover and squeeze when pressed)
 - Uses your **colour scheme's accent colour**, even with Plasma styles that ship their own highlight colour
 - Opaque header over a translucent body that follows your Plasma style's blur
@@ -60,7 +61,6 @@ Right-click the icon → **Configure Laetum Launcher…**
 | Header → Button size | Default or Large header buttons; the spacing grows with them |
 | Header → Buttons | Show or hide the Software store, Files, Terminal, System Settings and Info Center buttons (Info Center is off by default; Power is always shown) |
 | Software store app | Desktop file ID or command for the store button (default `org.dnf.AppCenter`, the DNF App Center) |
-| Store icon | Automatic (default) uses your icon theme's own store icon when it has one (e.g. Papirus) and Laetum's outline bag otherwise (e.g. Breeze); or pick the outline or filled bag yourself |
 | Terminal app | Desktop file ID or command for the terminal button (default `org.kde.konsole`) |
 | Items → Animations | Animate apps on hover and/or on click (both on by default) |
 | Show the Recent tab | Show or hide the Recent tab |

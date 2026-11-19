@@ -21,7 +21,6 @@ KCM.SimpleKCM {
     property alias cfg_showInfoCenterButton: infoCheck.checked
     property int cfg_headerIconSize
     property alias cfg_headerHeight: headerHeightCombo.currentIndex
-    property alias cfg_storeIconStyle: storeIconCombo.currentIndex
     property alias cfg_animateHover: hoverCheck.checked
     property alias cfg_animateClick: clickCheck.checked
     property var cfg_categoryTabs: []
@@ -41,7 +40,6 @@ KCM.SimpleKCM {
     property bool cfg_showInfoCenterButtonDefault
     property int cfg_headerIconSizeDefault
     property int cfg_headerHeightDefault
-    property int cfg_storeIconStyleDefault
     property bool cfg_animateHoverDefault
     property bool cfg_animateClickDefault
     property var cfg_categoryTabsDefault
@@ -98,12 +96,6 @@ KCM.SimpleKCM {
             enabled: storeCheck.checked
             Layout.leftMargin: Kirigami.Units.gridUnit
             placeholderText: i18n("Desktop file ID or command")
-        }
-        QQC2.ComboBox {
-            id: storeIconCombo
-            enabled: storeCheck.checked
-            Layout.leftMargin: Kirigami.Units.gridUnit
-            model: [i18nc("Store icon", "Icon: automatic (match icon theme)"), i18nc("Store icon", "Icon: outline"), i18nc("Store icon", "Icon: filled")]
         }
 
         QQC2.CheckBox {

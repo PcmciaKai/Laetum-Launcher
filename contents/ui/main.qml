@@ -35,11 +35,11 @@ PlasmoidItem {
         accentReader.connectSource(accentCommand);
     }
 
-    // The icon theme's own store icon, if it draws one (e.g. Papirus); empty for themes
-    // without one (e.g. Breeze), which then get our bundled bag
-    property string themeStoreIcon: ""
+    // Papirus-style icon themes use solid icons, so they get the filled store bag;
+    // Breeze and other line-style themes get the outline bag
+    property bool storeIconFilled: false
     readonly property string storeIconCommand: "sh '"
-        + decodeURIComponent(Qt.resolvedUrl("../code/find-store-icon.sh").toString().replace(/^file:\/\//, "")) + "'"
+        + decodeURIComponent(Qt.resolvedUrl("../code/store-icon-style.sh").toString().replace(/^file:\/\//, "")) + "'"
 
     function refreshStoreIcon() {
         storeIconReader.connectSource(storeIconCommand);
@@ -49,7 +49,7 @@ PlasmoidItem {
         id: storeIconReader
         engine: "executable"
         onNewData: (source, data) => {
-            root.themeStoreIcon = (data.stdout || "").trim();
+            root.storeIconFilled = (data.stdout || "").trim() === "filled";
             disconnectSource(source);
         }
     }

@@ -22,10 +22,6 @@
     <entry name="showStoreButton" type="Bool">
       <default>true</default>
     </entry>
-    <!-- 0 = Automatic (the icon theme's own, else Outline), 1 = Outline, 2 = Filled -->
-    <entry name="storeIconStyle" type="Int">
-      <default>0</default>
-    </entry>
     <entry name="showFilesButton" type="Bool">
       <default>true</default>
     </entry>

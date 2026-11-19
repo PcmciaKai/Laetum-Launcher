@@ -268,11 +268,7 @@ FocusScope {
                         visible: Plasmoid.configuration.showStoreButton && Plasmoid.configuration.storeApp !== ""
                         iconSize: menu.headerIconSize
                         thin: menu.thinHeader
-                        // Automatic: the icon theme's own store icon if it has one, else our outline bag
-                        readonly property int style: Plasmoid.configuration.storeIconStyle
-                        iconName: style === 0 ? root.themeStoreIcon : ""
-                        iconSource: iconName !== "" ? ""
-                            : Qt.resolvedUrl(style === 2 ? "../icons/store-filled-symbolic.svg" : "../icons/store-symbolic.svg")
+                        iconSource: Qt.resolvedUrl(root.storeIconFilled ? "../icons/store-filled-symbolic.svg" : "../icons/store-symbolic.svg")
                         tooltip: i18n("Software Store")
                         onClicked: menu.runApp(Plasmoid.configuration.storeApp)
                     }
