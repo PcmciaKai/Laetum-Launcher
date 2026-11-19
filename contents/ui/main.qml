@@ -35,6 +35,25 @@ PlasmoidItem {
         accentReader.connectSource(accentCommand);
     }
 
+    // The icon theme's own store icon, if it draws one (e.g. Papirus); empty for themes
+    // without one (e.g. Breeze), which then get our bundled bag
+    property string themeStoreIcon: ""
+    readonly property string storeIconCommand: "sh '"
+        + decodeURIComponent(Qt.resolvedUrl("../code/find-store-icon.sh").toString().replace(/^file:\/\//, "")) + "'"
+
+    function refreshStoreIcon() {
+        storeIconReader.connectSource(storeIconCommand);
+    }
+
+    P5Support.DataSource {
+        id: storeIconReader
+        engine: "executable"
+        onNewData: (source, data) => {
+            root.themeStoreIcon = (data.stdout || "").trim();
+            disconnectSource(source);
+        }
+    }
+
     P5Support.DataSource {
         id: accentReader
         engine: "executable"
@@ -126,6 +145,7 @@ PlasmoidItem {
     onExpandedChanged: {
         if (root.expanded) {
             refreshAccent();
+            refreshStoreIcon();
         }
     }
 
@@ -168,5 +188,6 @@ PlasmoidItem {
     Component.onCompleted: {
         rootModel.refresh();
         refreshAccent();
+        refreshStoreIcon();
     }
 }

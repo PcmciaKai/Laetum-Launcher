@@ -60,6 +60,7 @@ Right-click the icon → **Configure Laetum Launcher…**
 | Header → Button size | Default or Large header buttons; the spacing grows with them |
 | Header → Buttons | Show or hide the Software store, Files, Terminal, System Settings and Info Center buttons (Info Center is off by default; Power is always shown) |
 | Software store app | Desktop file ID or command for the store button (default `org.dnf.AppCenter`, the DNF App Center) |
+| Store icon | Automatic (default) uses your icon theme's own store icon when it has one (e.g. Papirus) and Laetum's outline bag otherwise (e.g. Breeze); or pick the outline or filled bag yourself |
 | Terminal app | Desktop file ID or command for the terminal button (default `org.kde.konsole`) |
 | Items → Animations | Animate apps on hover and/or on click (both on by default) |
 | Show the Recent tab | Show or hide the Recent tab |
